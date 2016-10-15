@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<title>TodoApp with ReactJS</title>
+
+		<!-- Bootstrap CSS -->
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.3.2/react.js"></script>
+	    <script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.3.2/react-dom.js"></script>
+	    <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-core/5.8.24/browser.min.js"></script>
+	    <script src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.3/underscore.js"></script>
+
+	    <style type="text/css">
+	    	.btn.btn-primary {
+	    		position: relative;
+	    		top: 8px;
+	    		left: 10px;
+	    	}
+	    	a.list-group-item {
+	    		position: relative;
+	    		cursor: default !important;
+	    	}
+	    	span.removeItem {
+	    		position: absolute;
+	    		right: 15px;
+	    		cursor: pointer;
+	    	}
+	    </style>
+
+		<!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+		<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+		<!--[if lt IE 9]>
+			<script src="https://oss.maxcdn.com/libs/html5shiv/3.7.2/html5shiv.min.js"></script>
+			<script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+		<![endif]-->
+	</head>
+	<body>
+		<h1 class="text-center">Hello folks!</h1>
+
+		<div class="container">
+			<div class="row">
+				<div class="col-xs-8 col-xs-offset-2" id="todo-app"></div>
+			</div>
+		</div>
+
+		<script type="text/babel">
+
+			var TodoItem = React.createClass({
+				render: function(){
+					return (
+						<a href="#" className="list-group-item">
+							{this.props.text}
+							<span className="removeItem">
+								<i className="glyphicon glyphicon-remove"></i>
+							</span>
+						</a>
+					);
+				}
+			});
+
+			var TodoList = React.createClass({
+				render: function(){
+					return (
+						<div className="list-group">
+							{ this.props.todos.map(function(e){
+								return <TodoItem key={e.id} text={e.text} />
+							})}
+						</div>
+					);
+				}
+			});
+
+			var TodoApp  = React.createClass({
+				getInitialState: function() {
+					return {
+						items: [
+							{text: 'Create a new class called "GetMarried.php"', id: 1},
+							{text: 'Add a bunch o functions to that class', id: 2},
+							{text: 'Go ahead and do some functionnal tests', id: 3},
+							{text: 'All test fails? Just drop it, and let it go ;)', id: 4}
+						]
+					};
+				},
+				performAdd: function() {
+					var field = document.querySelector('#textField');
+					var updatedList = this.state.items;
+					updatedList.push({
+						text: field.value,
+						id: _.last(this.state.items).id++
+					});
+					this.setState({ items: updatedList });
+					field.value = "";
+				},
+				removeEl: function() {
+					console.log('called !')
+				},
+				render: function() {
+					return (
+						<div>
+							<div className="well clearfix">
+								<div id="field">
+									<label htmlFor="textField">What are you doing today?</label>
+									<input type="text" id="textField" className="form-control" placeholder="type something here.." />
+								</div>
+								<div className="col-xs-2 pull-right">
+									<a href="#" className="btn btn-primary" onClick={ this.performAdd }>Go ahead!</a>
+								</div>
+							</div>
+							<TodoList todos={this.state.items} />
+						</div>
+					);
+				}
+			});
+
+			ReactDOM.render(<TodoApp />, document.getElementById("todo-app"));
+		</script>
+
+		<!-- jQuery -->
+		<script src="//code.jquery.com/jquery.js"></script>
+		<!-- Bootstrap JavaScript -->
+		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
+	</body>
+</html>
