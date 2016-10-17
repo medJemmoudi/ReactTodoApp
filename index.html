@@ -54,7 +54,7 @@
 					return (
 						<a href="#" className="list-group-item">
 							{this.props.text}
-							<span className="removeItem">
+							<span className="removeItem" onClick={this.props.remove}>
 								<i className="glyphicon glyphicon-remove"></i>
 							</span>
 						</a>
@@ -63,11 +63,31 @@
 			});
 
 			var TodoList = React.createClass({
+				getInitialState: function() {
+					return {
+						items: []
+					};
+				},
+
+				componentWillMount: function() {
+					this.setState({
+						items: this.props.todos
+					});
+				},
+
+				removeElement: function(i) {
+					this.state.items.splice(i, 1);
+					this.setState({
+						items: this.state.items
+					});
+				},
+
 				render: function(){
+					var self = this;
 					return (
 						<div className="list-group">
-							{ this.props.todos.map(function(e){
-								return <TodoItem key={e.id} text={e.text} />
+							{ this.state.items.map(function(e, i){
+								return <TodoItem key={e.id} text={e.text} remove={self.removeElement.bind(self, i)}/>
 							})}
 						</div>
 					);
@@ -77,27 +97,23 @@
 			var TodoApp  = React.createClass({
 				getInitialState: function() {
 					return {
-						items: [
-							{text: 'Create a new class called "GetMarried.php"', id: 1},
-							{text: 'Add a bunch o functions to that class', id: 2},
-							{text: 'Go ahead and do some functionnal tests', id: 3},
-							{text: 'All test fails? Just drop it, and let it go ;)', id: 4}
-						]
+						items: []
 					};
 				},
+
 				performAdd: function() {
 					var field = document.querySelector('#textField');
 					var updatedList = this.state.items;
+					var lastItem = _.last(this.state.items);
+					var newId = ( !lastItem ) ? 1 : lastItem.id + 1;
 					updatedList.push({
 						text: field.value,
-						id: _.last(this.state.items).id++
+						id: newId
 					});
 					this.setState({ items: updatedList });
 					field.value = "";
 				},
-				removeEl: function() {
-					console.log('called !')
-				},
+
 				render: function() {
 					return (
 						<div>
@@ -123,5 +139,8 @@
 		<script src="//code.jquery.com/jquery.js"></script>
 		<!-- Bootstrap JavaScript -->
 		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
+<script id="__bs_script__">//<![CDATA[
+    document.write("<script async src='http://HOST:3000/browser-sync/browser-sync-client.js?v=2.17.3'><\/script>".replace("HOST", location.hostname));
+//]]></script>
 	</body>
 </html>
